@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -11,12 +12,12 @@ import { CoinStreakAnimation } from '@/components/CoinStreakAnimation';
 import { AchievementCelebration } from '@/components/AchievementCelebration';
 import { RewardModal, LevelUpModal, MilestoneModal } from '@/components/PremiumModal';
 import { MemoryJukebox } from '@/components/MemoryJukebox';
-import { 
-  Sparkles, 
-  Heart, 
-  Target, 
-  TrendingUp, 
-  Gift, 
+import {
+  Sparkles,
+  Heart,
+  Target,
+  TrendingUp,
+  Gift,
   Clock,
   Trophy,
   Star,
@@ -85,20 +86,6 @@ export function HomeDashboard({ streak, coins }: HomeDashboardProps) {
     console.log('Streak clicked!');
   };
 
-  const getStreakColor = () => {
-    if (streak >= 30) return 'text-purple-600';
-    if (streak >= 14) return 'text-blue-600';
-    if (streak >= 7) return 'text-green-600';
-    return 'text-orange-600';
-  };
-
-  const getStreakEmoji = () => {
-    if (streak >= 30) return '🔥';
-    if (streak >= 14) return '⚡';
-    if (streak >= 7) return '✨';
-    return '🌟';
-  };
-
   return (
     <div className="p-4 space-y-6">
       {/* Header with premium glass effect */}
@@ -111,14 +98,20 @@ export function HomeDashboard({ streak, coins }: HomeDashboardProps) {
               <p className="text-white/80 text-sm">Ready to strengthen your bond today?</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex flex-col items-center bg-white/20 backdrop-blur-lg rounded-xl p-3 min-w-[80px]">
-                <div className="flex items-center gap-1">
-                  <span className="text-2xl animate-pulse">{getStreakEmoji()}</span>
-                  <span className={`text-xl font-bold ${getStreakColor()}`}>{streak}</span>
-                </div>
-                <span className="text-xs text-white/80">day streak</span>
+              <div
+                className="rounded-xl overflow-hidden min-w-[80px] h-[60px] bg-white/20 backdrop-blur-lg"
+                aria-label="Couple photo"
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400&auto=format&fit=crop&crop=faces"
+                  alt="Couple smiling"
+                  width={80}
+                  height={60}
+                  className="w-[80px] h-[60px] object-cover"
+                  priority
+                />
               </div>
-              
+
               <div className="flex flex-col items-center bg-yellow-400/90 backdrop-blur-lg rounded-xl p-3 min-w-[80px]">
                 <div className="flex items-center gap-1">
                   <span className="text-xl animate-bounce">🪙</span>
