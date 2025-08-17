@@ -6,5 +6,5 @@
 > Ready on http://0.0.0.0:3000
 > Socket.IO server running at ws://0.0.0.0:3000/api/socketio
  ○ Compiling / ...
- ✓ Compiled / in 14.5s (1811 modules)
- GET / 200 in 15656ms
+ ✓ Compiled / in 15.2s (1811 modules)
+ GET / 200 in 16419ms
