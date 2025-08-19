@@ -1,23 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { 
+  createMealPlanSchema, 
+  mealPlanQuerySchema,
+  validateRequestBody,
+  validateQuery 
+} from '@/lib/validation';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const coupleId = searchParams.get('coupleId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-
-    if (!coupleId) {
-      return NextResponse.json({ error: 'Couple ID required' }, { status: 400 });
-    }
-
-    let whereClause: any = { couple_id: coupleId };
-
-    if (startDate && endDate) {
+    
+    // Validate query parameters with Zod
+    const validatedQuery = validateQuery(mealPlanQuerySchema, searchParams);
+    
+    let whereClause: any = { couple_id: validatedQuery.coupleId };
+    
+    if (validatedQuery.startDate && validatedQuery.endDate) {
       whereClause.date = {
-        gte: new Date(startDate),
-        lte: new Date(endDate),
+        gte: new Date(validatedQuery.startDate),
+        lte: new Date(validatedQuery.endDate),
       };
     }
 
@@ -36,6 +38,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(transformedMealPlans);
   } catch (error) {
     console.error('Error fetching meal plans:', error);
+    
+    // Return validation error with proper message
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -43,32 +51,19 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      coupleId,
-      name,
-      date,
-      meals,
-      nutrition,
-      budget,
-      notes,
-    } = body;
-
-    if (!coupleId || !name || !date || !meals || !nutrition || !budget) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    
+    // Validate request body with Zod
+    const validatedData = validateRequestBody(createMealPlanSchema, body);
 
     const mealPlan = await db.mealPlan.create({
       data: {
-        couple_id: coupleId,
-        name,
-        date: new Date(date),
-        meals: JSON.stringify(meals),
-        nutrition: JSON.stringify(nutrition),
-        budget: parseFloat(budget),
-        notes,
+        couple_id: validatedData.coupleId,
+        name: validatedData.name,
+        date: new Date(validatedData.date),
+        meals: JSON.stringify(validatedData.meals),
+        nutrition: JSON.stringify(validatedData.nutrition),
+        budget: validatedData.budget,
+        notes: validatedData.notes,
       },
     });
 
@@ -81,6 +76,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(transformedMealPlan, { status: 201 });
   } catch (error) {
     console.error('Error creating meal plan:', error);
+    
+    // Return validation error with proper message
+    if (error instanceof Error && error.message.includes('Validation failed')) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
