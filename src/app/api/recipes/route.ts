@@ -1,25 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { 
+  createRecipeSchema, 
+  recipeQuerySchema,
+  validateRequestBody,
+  validateQuery 
+} from '@/lib/validation';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const cuisine = searchParams.get('cuisine');
-    const difficulty = searchParams.get('difficulty');
-    const tags = searchParams.get('tags');
-    const isFavorite = searchParams.get('isFavorite');
-
+    
+    // Validate query parameters with Zod
+    const validatedQuery = validateQuery(recipeQuerySchema, searchParams);
+    
     let whereClause: any = {};
-
-    if (cuisine && cuisine !== 'all') {
-      whereClause.cuisine = cuisine;
+    
+    if (validatedQuery.cuisine && validatedQuery.cuisine !== 'all') {
+      whereClause.cuisine = validatedQuery.cuisine;
     }
-
-    if (difficulty && difficulty !== 'all') {
-      whereClause.difficulty = difficulty;
+    
+    if (validatedQuery.difficulty && validatedQuery.difficulty !== 'all') {
+      whereClause.difficulty = validatedQuery.difficulty;
     }
-
-    if (isFavorite === 'true') {
+    
+    if (validatedQuery.isFavorite === 'true') {
       whereClause.is_favorite = true;
     }
 
@@ -41,8 +46,8 @@ export async function GET(request: NextRequest) {
 
     // Filter by tags if specified
     let filteredRecipes = transformedRecipes;
-    if (tags) {
-      const tagArray = tags.split(',');
+    if (validatedQuery.tags) {
+      const tagArray = validatedQuery.tags.split(',');
       filteredRecipes = transformedRecipes.filter(recipe =>
         tagArray.some(tag => recipe.tags.includes(tag))
       );
@@ -51,6 +56,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(filteredRecipes);
   } catch (error) {
     console.error('Error fetching recipes:', error);
+    
+    // Return validation error with proper message
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -58,48 +69,29 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      name,
-      description,
-      ingredients,
-      instructions,
-      prepTime,
-      cookTime,
-      servings,
-      difficulty,
-      cuisine,
-      tags,
-      nutrition,
-      isFavorite = false,
-      imageUrl,
-    } = body;
-
-    if (!name || !ingredients || !instructions || !prepTime || !cookTime || !servings || !difficulty || !cuisine) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    
+    // Validate request body with Zod
+    const validatedData = validateRequestBody(createRecipeSchema, body);
 
     const recipe = await db.recipe.create({
       data: {
-        name,
-        description,
-        ingredients: JSON.stringify(ingredients),
-        instructions,
-        prep_time: prepTime,
-        cook_time: cookTime,
-        servings,
-        difficulty,
-        cuisine,
-        tags: JSON.stringify(tags || []),
-        nutrition: JSON.stringify(nutrition || {
+        name: validatedData.name,
+        description: validatedData.description,
+        ingredients: JSON.stringify(validatedData.ingredients),
+        instructions: validatedData.instructions,
+        prep_time: validatedData.prepTime,
+        cook_time: validatedData.cookTime,
+        servings: validatedData.servings,
+        difficulty: validatedData.difficulty,
+        cuisine: validatedData.cuisine,
+        tags: JSON.stringify(validatedData.tags || []),
+        nutrition: JSON.stringify(validatedData.nutrition || {
           calories: 0,
           protein: 0,
           carbs: 0,
           fats: 0,
         }),
-        is_favorite: isFavorite,
+        is_favorite: validatedData.isFavorite,
       },
     });
 
@@ -113,6 +105,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(transformedRecipe, { status: 201 });
   } catch (error) {
     console.error('Error creating recipe:', error);
+    
+    // Return validation error with proper message
+    if (error instanceof Error && error.message.includes('Validation failed')) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
