@@ -1,26 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { 
+  createMemorySchema, 
+  memoryQuerySchema,
+  validateRequestBody,
+  validateQuery 
+} from '@/lib/validation';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const coupleId = searchParams.get('coupleId');
-    const type = searchParams.get('type');
-    const sentiment = searchParams.get('sentiment');
-    const tags = searchParams.get('tags');
-
-    if (!coupleId) {
-      return NextResponse.json({ error: 'Couple ID required' }, { status: 400 });
+    
+    // Validate query parameters with Zod
+    const validatedQuery = validateQuery(memoryQuerySchema, searchParams);
+    
+    let whereClause: any = { couple_id: validatedQuery.coupleId };
+    
+    if (validatedQuery.type && validatedQuery.type !== 'all') {
+      whereClause.type = validatedQuery.type;
     }
-
-    let whereClause: any = { couple_id: coupleId };
-
-    if (type && type !== 'all') {
-      whereClause.type = type;
-    }
-
-    if (sentiment && sentiment !== 'all') {
-      whereClause.sentiment = sentiment;
+    
+    if (validatedQuery.sentiment && validatedQuery.sentiment !== 'all') {
+      whereClause.sentiment = validatedQuery.sentiment;
     }
 
     // For SQLite, we'll handle tags filtering in JavaScript
@@ -40,8 +41,8 @@ export async function GET(request: NextRequest) {
     }));
 
     // Filter by tags if specified
-    if (tags) {
-      const tagArray = tags.split(',');
+    if (validatedQuery.tags) {
+      const tagArray = validatedQuery.tags.split(',');
       transformedMemories = transformedMemories.filter(memory =>
         tagArray.some(tag => memory.tags.includes(tag))
       );
@@ -50,6 +51,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(transformedMemories);
   } catch (error) {
     console.error('Error fetching memories:', error);
+    
+    // Return validation error with proper message
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -57,47 +64,34 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      coupleId,
-      type,
-      content,
-      title,
-      description,
-      tags = [],
-      isPrivate = false,
-    } = body;
-
-    if (!coupleId || !type || !content || !title) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    
+    // Validate request body with Zod
+    const validatedData = validateRequestBody(createMemorySchema, body);
 
     // Simple sentiment analysis (in a real app, this would use AI)
-    const sentiment = analyzeSentiment(content + ' ' + (description || ''));
+    const sentiment = analyzeSentiment(validatedData.content + ' ' + (validatedData.description || ''));
 
     const memory = await db.memory.create({
       data: {
-        couple_id: coupleId,
-        type,
-        content,
-        title,
-        description,
+        couple_id: validatedData.coupleId,
+        type: validatedData.type,
+        content: validatedData.content,
+        title: validatedData.title,
+        description: validatedData.description,
         date: new Date(),
-        tags: JSON.stringify(tags),
+        tags: JSON.stringify(validatedData.tags),
         sentiment,
         partners: JSON.stringify(['partner_a']), // Current user
-        is_private: isPrivate,
+        is_private: validatedData.isPrivate,
       },
     });
 
     // Award coins for creating memory
     await db.rewardTransaction.create({
       data: {
-        couple_id: coupleId,
+        couple_id: validatedData.coupleId,
         coins_earned: 10,
-        activity: 'Created memory: ' + title,
+        activity: 'Created memory: ' + validatedData.title,
       },
     });
 
@@ -110,6 +104,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(transformedMemory, { status: 201 });
   } catch (error) {
     console.error('Error creating memory:', error);
+    
+    // Return validation error with proper message
+    if (error instanceof Error && error.message.includes('Validation failed')) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
