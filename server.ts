@@ -5,7 +5,9 @@ import { Server } from 'socket.io';
 import next from 'next';
 
 const dev = process.env.NODE_ENV !== 'production';
-const currentPort = 3000;
+// Use dynamic port assignment from environment variable with fallback to 3000
+// This allows deployment flexibility for different hosting environments
+const currentPort = process.env.PORT || 3000;
 const hostname = '0.0.0.0';
 
 // Custom server with Socket.IO integration
@@ -18,7 +20,6 @@ async function createCustomServer() {
       // In production, use the current directory where .next is located
       conf: dev ? undefined : { distDir: './.next' }
     });
-
     await nextApp.prepare();
     const handle = nextApp.getRequestHandler();
 
@@ -47,7 +48,6 @@ async function createCustomServer() {
       console.log(`> Ready on http://${hostname}:${currentPort}`);
       console.log(`> Socket.IO server running at ws://${hostname}:${currentPort}/api/socketio`);
     });
-
   } catch (err) {
     console.error('Server startup error:', err);
     process.exit(1);
