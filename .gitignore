@@ -1,9 +1,194 @@
+# ===============================
+# Node.js Dependencies
+# ===============================
 node_modules/
-__pycache__/
-*.pyc
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.pnpm-debug.log*
+
+# ===============================
+# Next.js Specific
+# ===============================
+.next/
+out/
+build/
+.swc/
+
+# ===============================
+# Build Outputs & Distribution
+# ===============================
 dist/
 build/
-.DS_Store
-Thumbs.db
-.env
+lib/
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+.vite/
+.nuxt/
+.output/
+.vercel/
+.netlify/
 
+# ===============================
+# Logs & Runtime
+# ===============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ===============================
+# Runtime & Process
+# ===============================
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ===============================
+# IDE & Editor Files
+# ===============================
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ IDEA / WebStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Atom
+.ftpconfig
+.sftpconfig
+
+# ===============================
+# Prisma & Database
+# ===============================
+# Prisma
+prisma/migrations/
+*.db
+*.sqlite
+*.sqlite3
+
+# Database files
+*.db-journal
+*.db-wal
+*.db-shm
+database.json
+
+# ===============================
+# Environment & Configuration
+# ===============================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.envrc
+
+# ===============================
+# Testing
+# ===============================
+coverage/
+*.lcov
+.nyc_output/
+jest_0/
+.jest/
+
+# ===============================
+# OS Generated Files
+# ===============================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+
+# ===============================
+# Temporary & Cache Files
+# ===============================
+.tmp/
+tmp/
+*.tmp
+*.temp
+.sass-cache/
+.connect.lock
+.typings/
+
+# ===============================
+# Python (Legacy Support)
+# ===============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+PYTHONPATH
