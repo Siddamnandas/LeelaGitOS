@@ -1,11 +1,9 @@
 import { z } from 'zod';
-
 // Common schemas
 const coupleIdSchema = z.string().min(1, 'Couple ID is required');
 const dateSchema = z.string().datetime().or(z.date());
 const positiveNumberSchema = z.number().positive();
 const optionalDateSchema = z.string().datetime().or(z.date()).optional().nullable();
-
 // Grocery List schemas
 const groceryItemSchema = z.object({
   name: z.string().min(1, 'Item name is required'),
@@ -15,7 +13,6 @@ const groceryItemSchema = z.object({
   category: z.string().optional(),
   purchased: z.boolean().default(false)
 });
-
 export const createGroceryListSchema = z.object({
   coupleId: coupleIdSchema,
   name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
@@ -24,11 +21,9 @@ export const createGroceryListSchema = z.object({
   assignedTo: z.string().min(1, 'Assigned user is required'),
   dueDate: optionalDateSchema
 });
-
 export const updateGroceryListSchema = createGroceryListSchema.partial().extend({
   id: z.string().min(1, 'ID is required')
 });
-
 // Meal Plan schemas
 const mealSchema = z.object({
   breakfast: z.string().optional(),
@@ -36,7 +31,6 @@ const mealSchema = z.object({
   dinner: z.string().optional(),
   snacks: z.array(z.string()).default([])
 });
-
 const nutritionSchema = z.object({
   calories: z.number().min(0, 'Calories cannot be negative'),
   protein: z.number().min(0, 'Protein cannot be negative'),
@@ -45,7 +39,6 @@ const nutritionSchema = z.object({
   fiber: z.number().min(0, 'Fiber cannot be negative').optional(),
   sugar: z.number().min(0, 'Sugar cannot be negative').optional()
 });
-
 export const createMealPlanSchema = z.object({
   coupleId: coupleIdSchema,
   name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
@@ -55,17 +48,14 @@ export const createMealPlanSchema = z.object({
   budget: z.number().positive('Budget must be positive'),
   notes: z.string().max(1000, 'Notes too long').optional()
 });
-
 export const updateMealPlanSchema = createMealPlanSchema.partial().extend({
   id: z.string().min(1, 'ID is required')
 });
-
 // Memory schemas
 const memoryTypeSchema = z.enum(['photo', 'video', 'text', 'milestone']);
 const memoryTypeQuerySchema = z.enum(['photo', 'video', 'text', 'milestone', 'all']);
 const sentimentSchema = z.enum(['positive', 'neutral', 'negative']);
 const sentimentQuerySchema = z.enum(['positive', 'neutral', 'negative', 'all']);
-
 export const createMemorySchema = z.object({
   coupleId: coupleIdSchema,
   type: memoryTypeSchema,
@@ -75,31 +65,26 @@ export const createMemorySchema = z.object({
   tags: z.array(z.string().max(50, 'Tag too long')).default([]),
   isPrivate: z.boolean().default(false)
 });
-
 export const updateMemorySchema = createMemorySchema.partial().extend({
   id: z.string().min(1, 'ID is required')
 });
-
 // Recipe schemas
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);
 const cuisines = ['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other'] as const;
 const cuisineSchema = z.enum(cuisines);
 const cuisineQuerySchema = z.enum(['all', ...cuisines]);
-
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Ingredient name is required'),
   amount: z.string().min(1, 'Amount is required'),
   unit: z.string().optional(),
   notes: z.string().optional()
 });
-
 const recipeNutritionSchema = z.object({
   calories: z.number().min(0, 'Calories cannot be negative'),
   protein: z.number().min(0, 'Protein cannot be negative'),
   carbs: z.number().min(0, 'Carbs cannot be negative'),
   fats: z.number().min(0, 'Fats cannot be negative')
 });
-
 export const createRecipeSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255, 'Name too long'),
   description: z.string().max(1000, 'Description too long').optional(),
@@ -115,38 +100,32 @@ export const createRecipeSchema = z.object({
   isFavorite: z.boolean().default(false),
   imageUrl: z.string().url('Invalid URL').optional()
 });
-
 export const updateRecipeSchema = createRecipeSchema.partial().extend({
   id: z.string().min(1, 'ID is required')
 });
-
 // Query parameter schemas
 export const groceryListQuerySchema = z.object({
   coupleId: coupleIdSchema,
   status: z.enum(['pending', 'in_progress', 'completed', 'all']).optional(),
   assignedTo: z.string().optional()
 });
-
 export const mealPlanQuerySchema = z.object({
   coupleId: coupleIdSchema,
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional()
 });
-
 export const memoryQuerySchema = z.object({
   coupleId: coupleIdSchema,
   type: memoryTypeQuerySchema.optional(),
   sentiment: sentimentQuerySchema.optional(),
   tags: z.string().optional() // Comma-separated string
 });
-
 export const recipeQuerySchema = z.object({
   cuisine: cuisineQuerySchema.optional(),
   difficulty: difficultySchema.optional(),
   tags: z.string().optional(), // Comma-separated string
   isFavorite: z.enum(['true', 'false']).optional()
 });
-
 // Utility function for validating request bodies
 export function validateRequestBody<T>(schema: z.ZodSchema<T>, data: unknown): T {
   try {
@@ -159,7 +138,6 @@ export function validateRequestBody<T>(schema: z.ZodSchema<T>, data: unknown): T
     throw error;
   }
 }
-
 // Utility function for validating query parameters
 export function validateQuery<T>(schema: z.ZodSchema<T>, searchParams: URLSearchParams): T {
   const data: Record<string, string> = {};
