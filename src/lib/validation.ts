@@ -62,6 +62,7 @@ export const updateMealPlanSchema = createMealPlanSchema.partial().extend({
 
 // Memory schemas
 const memoryTypeSchema = z.enum(['photo', 'video', 'text', 'milestone']);
+const memoryTypeQuerySchema = z.enum(['photo', 'video', 'text', 'milestone', 'all']);
 const sentimentSchema = z.enum(['positive', 'neutral', 'negative']);
 
 export const createMemorySchema = z.object({
@@ -80,7 +81,10 @@ export const updateMemorySchema = createMemorySchema.partial().extend({
 
 // Recipe schemas
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);
-const cuisineSchema = z.enum(['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other']);
+const difficultyQuerySchema = z.enum(['easy', 'medium', 'hard', 'all']);
+const cuisines = ['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other'] as const;
+const cuisineSchema = z.enum(cuisines);
+const cuisineQuerySchema = z.enum(['all', ...cuisines]);
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Ingredient name is required'),
@@ -131,14 +135,14 @@ export const mealPlanQuerySchema = z.object({
 
 export const memoryQuerySchema = z.object({
   coupleId: coupleIdSchema,
-  type: memoryTypeSchema.optional(),
+  type: memoryTypeQuerySchema.optional(),
   sentiment: sentimentSchema.optional(),
   tags: z.string().optional() // Comma-separated string
 });
 
 export const recipeQuerySchema = z.object({
-  cuisine: cuisineSchema.optional(),
-  difficulty: difficultySchema.optional(),
+  cuisine: cuisineQuerySchema.optional(),
+  difficulty: difficultyQuerySchema.optional(),
   tags: z.string().optional(), // Comma-separated string
   isFavorite: z.enum(['true', 'false']).optional()
 });
@@ -162,7 +166,7 @@ export function validateQuery<T>(schema: z.ZodSchema<T>, searchParams: URLSearch
   searchParams.forEach((value, key) => {
     data[key] = value;
   });
-  
+
   try {
     return schema.parse(data);
   } catch (error) {
