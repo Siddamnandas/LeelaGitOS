@@ -30,8 +30,9 @@ const CelebrationOverlay = memo(() => (
 CelebrationOverlay.displayName = 'CelebrationOverlay';
 
 // Memoized main content container for performance
-const MainContent = memo(({ children }) => (
+const MainContent = memo(({ children, id }: { children: React.ReactNode, id?: string }) => (
   <main
+    id={id}
     className="flex-1 overflow-y-auto pb-20"
     role="main"
     aria-label="Application main content"
@@ -42,7 +43,7 @@ const MainContent = memo(({ children }) => (
 MainContent.displayName = 'MainContent';
 
 // Memoized bottom navigation wrapper
-const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
+const BottomNavigationWrapper = memo(({ activeTab, onTabChange }: { activeTab: string, onTabChange: (tab: string) => void }) => (
   <nav
     className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-lg border-t border-gray-200/50 shadow-lg"
     role="navigation"
@@ -114,7 +115,8 @@ export default function Home() {
       case 'rituals':
         return <RitualSystem />;
       case 'family':
-        return <FamilyHub />;
+        // TODO: Replace with actual coupleId from user session
+        return <FamilyHub coupleId="clkd4q1z00000v9b9e7z9g9c8" />;
       case 'kids':
         return <KidsActivities />;
       case 'profile':
@@ -138,7 +140,7 @@ export default function Home() {
     
     // Escape key to focus on main content
     if (event.key === 'Escape') {
-      const mainElement = document.querySelector('[role="main"]');
+      const mainElement = document.querySelector<HTMLElement>('[role="main"]');
       if (mainElement) {
         mainElement.focus();
       }

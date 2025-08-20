@@ -1,1 +1,11 @@
-{}
+{
+  "/api/health/route": "app/api/health/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/meal-plans/route": "app/api/meal-plans/route.js",
+  "/api/grocery-lists/route": "app/api/grocery-lists/route.js",
+  "/api/memories/[id]/route": "app/api/memories/[id]/route.js",
+  "/api/recipes/route": "app/api/recipes/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/memories/route": "app/api/memories/route.js",
+  "/page": "app/page.js"
+}
