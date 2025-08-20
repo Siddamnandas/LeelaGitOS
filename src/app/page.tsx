@@ -116,7 +116,7 @@ export default function Home() {
       case 'family':
         return <FamilyHub />;
       case 'kids':
-        return <KidsActivities />;
+        return <KidsActivities coupleId="cmeixvrle0000j655rq9oklyx" />;
       case 'profile':
         return <ProfileSettings {...contentProps} />;
       default:
