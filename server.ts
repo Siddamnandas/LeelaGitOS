@@ -7,7 +7,7 @@ import next from 'next';
 const dev = process.env.NODE_ENV !== 'production';
 // Use dynamic port assignment from environment variable with fallback to 3000
 // This allows deployment flexibility for different hosting environments
-const currentPort = process.env.PORT || 3000;
+const currentPort = Number(process.env.PORT) || 3000;
 const hostname = '0.0.0.0';
 
 // Custom server with Socket.IO integration
