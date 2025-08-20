@@ -28,10 +28,8 @@ jobs:
     - name: Run linter
       run: npm run lint
     
-    - name: Debug - Show route file content
-      run: cat src/app/api/memories/[id]/route.ts
-    
     - name: Run type check and build
       run: npm run build
     
-    - name: Run tests (if test script exists)
+    - name: Run tests
+      run: npm test
