@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { z } from 'zod';
 import { validateRequestBody } from '@/lib/validation';
-
 /**
  * Zod schema for updating memory data
  */
@@ -13,32 +12,29 @@ const updateMemorySchema = z.object({
   isPrivate: z.boolean().optional(),
   partners: z.array(z.string()).optional(),
 });
-
 /**
  * GET /api/memories/[id] - Retrieve a specific memory by ID
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const memory = await db.memory.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
-
     if (!memory) {
       return NextResponse.json(
         { success: false, error: 'Memory not found' },
         { status: 404 }
       );
     }
-
     const transformedMemory = {
       ...memory,
       tags: JSON.parse(memory.tags as string),
       partners: JSON.parse(memory.partners as string),
     };
-
     return NextResponse.json({ success: true, data: transformedMemory });
   } catch (error) {
     console.error('Error fetching memory:', error);
@@ -48,32 +44,29 @@ export async function GET(
     );
   }
 }
-
 /**
  * PUT /api/memories/[id] - Update a specific memory by ID
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     
     // Validate request body with Zod
     const validatedData = validateRequestBody(updateMemorySchema, body);
-
     // Check if memory exists
     const existingMemory = await db.memory.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
-
     if (!existingMemory) {
       return NextResponse.json(
         { success: false, error: 'Memory not found' },
         { status: 404 }
       );
     }
-
     // Build update data object with only provided fields
     const updateData: any = {};
     if (validatedData.title !== undefined) updateData.title = validatedData.title;
@@ -81,20 +74,17 @@ export async function PUT(
     if (validatedData.tags !== undefined) updateData.tags = JSON.stringify(validatedData.tags);
     if (validatedData.isPrivate !== undefined) updateData.is_private = validatedData.isPrivate;
     if (validatedData.partners !== undefined) updateData.partners = JSON.stringify(validatedData.partners);
-
     // Update memory in database
     const updatedMemory = await db.memory.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     });
-
     // Transform response data
     const transformedMemory = {
       ...updatedMemory,
       tags: JSON.parse(updatedMemory.tags as string),
       partners: JSON.parse(updatedMemory.partners as string),
     };
-
     return NextResponse.json({ success: true, data: transformedMemory });
   } catch (error) {
     console.error('Error updating memory:', error);
@@ -113,32 +103,29 @@ export async function PUT(
     );
   }
 }
-
 /**
  * DELETE /api/memories/[id] - Delete a specific memory by ID
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Check if memory exists
     const existingMemory = await db.memory.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
-
     if (!existingMemory) {
       return NextResponse.json(
         { success: false, error: 'Memory not found' },
         { status: 404 }
       );
     }
-
     // Delete memory from database
     await db.memory.delete({
-      where: { id: params.id },
+      where: { id },
     });
-
     return NextResponse.json({
       success: true,
       data: { message: 'Memory deleted successfully' }
