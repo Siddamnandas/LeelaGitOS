@@ -131,14 +131,14 @@ export const mealPlanQuerySchema = z.object({
 
 export const memoryQuerySchema = z.object({
   coupleId: coupleIdSchema,
-  type: memoryTypeSchema.optional(),
-  sentiment: sentimentSchema.optional(),
+  type: z.enum(['photo', 'video', 'text', 'milestone', 'all']).optional(),
+  sentiment: z.enum(['positive', 'neutral', 'negative', 'all']).optional(),
   tags: z.string().optional() // Comma-separated string
 });
 
 export const recipeQuerySchema = z.object({
-  cuisine: cuisineSchema.optional(),
-  difficulty: difficultySchema.optional(),
+  cuisine: z.enum(['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other', 'all']).optional(),
+  difficulty: z.enum(['easy', 'medium', 'hard', 'all']).optional(),
   tags: z.string().optional(), // Comma-separated string
   isFavorite: z.enum(['true', 'false']).optional()
 });
@@ -167,7 +167,7 @@ export function validateQuery<T>(schema: z.ZodSchema<T>, searchParams: URLSearch
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errorMessages = error.errors.map(err => `${err.path.join('.')}: ${err.message}`);
+      const errorMessages = error.issues.map(err => `${err.path.join('.')}: ${err.message}`);
       throw new Error(`Query validation failed: ${errorMessages.join(', ')}`);
     }
     throw error;

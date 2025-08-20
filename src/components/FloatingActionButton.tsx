@@ -17,12 +17,15 @@ interface FloatingActionButtonProps {
   actions?: FABAction[];
   mainIcon?: any;
   position?: 'bottom-right' | 'bottom-left' | 'center-bottom';
+  'aria-label'?: string;
+  tabIndex?: number;
 }
 
 export function FloatingActionButton({ 
   actions, 
   mainIcon: MainIcon = Plus,
-  position = 'bottom-right' 
+  position = 'bottom-right',
+  ...props
 }: FloatingActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const fabRef = useRef<HTMLDivElement>(null);
@@ -172,6 +175,7 @@ export function FloatingActionButton({
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         className="bg-gradient-to-r from-purple-600 to-pink-600 w-16 h-16 rounded-full text-white shadow-2xl flex items-center justify-center relative overflow-hidden"
+        {...props}
       >
         {/* Animated background effect */}
         <motion.div
