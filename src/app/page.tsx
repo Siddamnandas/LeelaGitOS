@@ -11,6 +11,12 @@ import { FamilyPlanning } from '@/components/FamilyPlanning';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { useToast } from '@/hooks/use-toast';
 
+// Interface for BottomNavigationWrapper props
+interface BottomNavigationWrapperProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+
 // Memoized celebration component for performance
 const CelebrationOverlay = memo(() => (
   <div
@@ -42,7 +48,7 @@ const MainContent = memo(({ children }) => (
 MainContent.displayName = 'MainContent';
 
 // Memoized bottom navigation wrapper
-const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
+const BottomNavigationWrapper = memo<BottomNavigationWrapperProps>(({ activeTab, onTabChange }) => (
   <nav
     className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-lg border-t border-gray-200/50 shadow-lg"
     role="navigation"
@@ -84,7 +90,6 @@ export default function Home() {
     try {
       const lastLogin = localStorage.getItem('lastLogin');
       const today = new Date().toDateString();
-
       if (lastLogin !== today) {
         localStorage.setItem('lastLogin', today);
         setCoins(prev => prev + 50);
@@ -94,7 +99,6 @@ export default function Home() {
           description: "You earned 50 Lakshmi Coins for logging in today!",
           duration: 3000,
         });
-
         setTimeout(() => setShowCelebration(false), 3000);
       }
     } catch (error) {
@@ -105,18 +109,17 @@ export default function Home() {
   // Memoized content renderer to prevent unnecessary re-renders
   const renderContent = useMemo(() => {
     const contentProps = { coins, streak };
-
     switch (activeTab) {
       case 'home':
         return <HomeDashboard {...contentProps} />;
       case 'tasks':
-        return <TaskManagement />;
+        return <TaskManagement {...contentProps} />;
       case 'rituals':
-        return <RitualSystem />;
+        return <RitualSystem {...contentProps} />;
       case 'family':
-        return <FamilyHub />;
+        return <FamilyHub {...contentProps} />;
       case 'kids':
-        return <KidsActivities />;
+        return <KidsActivities {...contentProps} />;
       case 'profile':
         return <ProfileSettings {...contentProps} />;
       default:
