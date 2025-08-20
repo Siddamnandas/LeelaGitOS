@@ -19,11 +19,12 @@ const updateMemorySchema = z.object({
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const memory = await db.memory.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!memory) {
@@ -54,9 +55,10 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     
     // Validate request body with Zod
@@ -64,7 +66,7 @@ export async function PUT(
 
     // Check if memory exists
     const existingMemory = await db.memory.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingMemory) {
@@ -84,7 +86,7 @@ export async function PUT(
 
     // Update memory in database
     const updatedMemory = await db.memory.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     });
 
@@ -119,12 +121,14 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     // Check if memory exists
     const existingMemory = await db.memory.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existingMemory) {
@@ -136,7 +140,7 @@ export async function DELETE(
 
     // Delete memory from database
     await db.memory.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({
