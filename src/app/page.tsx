@@ -30,7 +30,7 @@ const CelebrationOverlay = memo(() => (
 CelebrationOverlay.displayName = 'CelebrationOverlay';
 
 // Memoized main content container for performance
-const MainContent = memo<{ children?: React.ReactNode }>(({ children }) => (
+const MainContent = memo(({ children }) => (
   <main
     className="flex-1 overflow-y-auto pb-20"
     role="main"
@@ -49,7 +49,7 @@ const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
     aria-label="Main navigation"
   >
     <BottomNavigation
-      activeTab={activeTab} 
+      activeTab={activeTab}
       onTabChange={onTabChange}
     />
   </nav>
@@ -84,7 +84,7 @@ export default function Home() {
     try {
       const lastLogin = localStorage.getItem('lastLogin');
       const today = new Date().toDateString();
-      
+
       if (lastLogin !== today) {
         localStorage.setItem('lastLogin', today);
         setCoins(prev => prev + 50);
@@ -94,7 +94,7 @@ export default function Home() {
           description: "You earned 50 Lakshmi Coins for logging in today!",
           duration: 3000,
         });
-        
+
         setTimeout(() => setShowCelebration(false), 3000);
       }
     } catch (error) {
@@ -105,18 +105,18 @@ export default function Home() {
   // Memoized content renderer to prevent unnecessary re-renders
   const renderContent = useMemo(() => {
     const contentProps = { coins, streak };
-    
+
     switch (activeTab) {
       case 'home':
         return <HomeDashboard {...contentProps} />;
       case 'tasks':
-        return <TaskManagement {...contentProps} />;
+        return <TaskManagement />;
       case 'rituals':
-        return <RitualSystem {...contentProps} />;
+        return <RitualSystem />;
       case 'family':
-        return <FamilyHub {...contentProps} />;
+        return <FamilyHub />;
       case 'kids':
-        return <KidsActivities {...contentProps} />;
+        return <KidsActivities />;
       case 'profile':
         return <ProfileSettings {...contentProps} />;
       default:
@@ -159,7 +159,7 @@ export default function Home() {
     >
       {/* Skip to main content link for accessibility */}
       <a
-        href="#main-content" 
+        href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded"
         tabIndex={0}
       >
@@ -182,7 +182,7 @@ export default function Home() {
 
       {/* Bottom Navigation with memoization and accessibility */}
       <BottomNavigationWrapper
-        activeTab={activeTab} 
+        activeTab={activeTab}
         onTabChange={handleTabChange}
       />
 

@@ -16,9 +16,7 @@ model Couple {
   partner_b_name  String
   anniversary_date DateTime?
   city            String   @default("Hyderabad")
-  children        Json     @default("[]")
   premium_until   DateTime?
-  encryption_key  String
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
 
@@ -107,23 +105,23 @@ model Child {
   preferences  Json     @default("[]")
   created_at   DateTime @default(now())
 
-  couple       Couple           @relation(fields: [couple_id], references: [id], onDelete: Cascade)
-  activities   FamilyActivity[]
+  couple            Couple           @relation(fields: [couple_id], references: [id], onDelete: Cascade)
+  storybook_entries StorybookEntry[]
 
   @@map("children")
 }
 
-model FamilyActivity {
-  id              String        @id @default(cuid())
+// Renamed from FamilyActivity to better reflect its purpose as a log/memory
+model StorybookEntry {
+  id              String    @id @default(cuid())
   child_id        String
-  activity_type   String
+  activity_type   String // e.g., 'krishna_prank_complete'
   completion_data Json?
-  completed_at    DateTime?
-  created_at      DateTime      @default(now())
+  created_at      DateTime  @default(now())
 
   child Child @relation(fields: [child_id], references: [id], onDelete: Cascade)
 
-  @@map("family_activities")
+  @@map("storybook_entries")
 }
 
 model RewardTransaction {
@@ -170,13 +168,13 @@ enum Archetype {
 model Memory {
   id          String   @id @default(cuid())
   couple_id   String
-  type        String   // 'text', 'audio', 'video', 'image'
-  content     String   // URL for media, text content for text memories
+  type        String // 'text', 'audio', 'video', 'image'
+  content     String // URL for media, text content for text memories
   title       String
   description String?
   date        DateTime @default(now())
   tags        Json     @default("[]") // JSON array of tags
-  sentiment   String   // 'positive', 'neutral', 'negative'
+  sentiment   String // 'positive', 'neutral', 'negative'
   partners    Json     @default("[]") // JSON array of partner IDs who contributed
   is_private  Boolean  @default(false)
   created_at  DateTime @default(now())
@@ -191,15 +189,15 @@ model Recipe {
   id           String   @id @default(cuid())
   name         String
   description  String?
-  ingredients  Json     // JSON array of ingredients
+  ingredients  Json // JSON array of ingredients
   instructions String
-  prep_time    Int      // in minutes
-  cook_time    Int      // in minutes
+  prep_time    Int // in minutes
+  cook_time    Int // in minutes
   servings     Int
-  difficulty   String   // 'easy', 'medium', 'hard'
-  cuisine      String   // 'indian', 'italian', 'chinese', etc.
+  difficulty   String // 'easy', 'medium', 'hard'
+  cuisine      String // 'indian', 'italian', 'chinese', etc.
   tags         Json     @default("[]") // JSON array of tags
-  nutrition    Json     // JSON nutrition info
+  nutrition    Json // JSON nutrition info
   is_favorite  Boolean  @default(false)
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
@@ -212,8 +210,8 @@ model MealPlan {
   couple_id   String
   name        String
   date        DateTime
-  meals       Json     // JSON meal structure with breakfast, lunch, dinner, snacks
-  nutrition   Json     // JSON nutrition info
+  meals       Json // JSON meal structure with breakfast, lunch, dinner, snacks
+  nutrition   Json // JSON nutrition info
   budget      Float
   actual_cost Float?
   notes       String?
@@ -226,17 +224,17 @@ model MealPlan {
 }
 
 model GroceryList {
-  id          String   @id @default(cuid())
-  couple_id   String
-  name        String
-  items       Json     // JSON array of grocery items
+  id           String   @id @default(cuid())
+  couple_id    String
+  name         String
+  items        Json // JSON array of grocery items
   total_budget Float
-  actual_cost Float?
-  assigned_to  String   // User ID
-  status      String   // 'pending', 'shopping', 'completed'
-  due_date    DateTime?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  actual_cost  Float?
+  assigned_to  String // User ID
+  status       String // 'pending', 'shopping', 'completed'
+  due_date     DateTime?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   couple Couple @relation(fields: [couple_id], references: [id], onDelete: Cascade)
 

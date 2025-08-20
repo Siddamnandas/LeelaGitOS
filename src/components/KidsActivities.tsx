@@ -23,28 +23,28 @@ import {
   Heart,
   Plus,
   Sparkles,
-  
+
   // Mythological Characters
   Feather,
   Moon,
   Sun,
-  
+
   // Krishna Prank
   Smile,
   Laugh,
   Camera,
   Image as ImageIcon,
-  
+
   // Hanuman Helper
   CheckCircle,
   Target as TargetIcon,
   Shield,
-  
+
   // Saraswati Creative
   Brush,
   Lightbulb,
   PenTool,
-  
+
   // General
   Calendar,
   Users,
@@ -405,14 +405,14 @@ export function KidsActivities() {
     setHanumanTasks(hanumanTasksData);
     setSaraswatiCreatives(saraswatiCreativesData);
     setStorybookEntries(storybookEntriesData);
-    
+
     // Calculate kindness points
     const totalPoints = kindnessMomentsData.reduce((sum, moment) => sum + moment.points, 0);
     setKindnessPoints(totalPoints);
-    
+
     // Set current day (simulate)
     setCurrentDay('krishna');
-    
+
     setLoading(false);
   };
 
@@ -434,10 +434,10 @@ export function KidsActivities() {
       points: Math.floor(Math.random() * 10) + 1,
       verified: true
     };
-    
+
     setKindnessMoments(prev => [...prev, newMoment]);
     setKindnessPoints(prev => prev + newMoment.points);
-    
+
     toast({
       title: "Kindness Recorded! 🌟",
       description: `Great job! You earned ${newMoment.points} kindness points.`,
@@ -467,9 +467,9 @@ export function KidsActivities() {
         description: `Had fun with ${prank.helperParent} and ${prank.targetParent}`,
         participants: ['Child', prank.helperParent, prank.targetParent]
       };
-      
+
       setStorybookEntries(prev => [...prev, newEntry]);
-      
+
       toast({
         title: "Prank Complete! 😄",
         description: "What a fun Krishna-style adventure!",
@@ -489,9 +489,9 @@ export function KidsActivities() {
         description: task.description,
         participants: ['Child', 'Parent']
       };
-      
+
       setStorybookEntries(prev => [...prev, newEntry]);
-      
+
       toast({
         title: "Task Complete! 🎉",
         description: task.celebrationPrompt,
@@ -511,9 +511,9 @@ export function KidsActivities() {
         description: creative.description,
         participants: ['Child', 'Parent']
       };
-      
+
       setStorybookEntries(prev => [...prev, newEntry]);
-      
+
       toast({
         title: "Creation Complete! 🎨",
         description: "Beautiful Saraswati-inspired creativity!",
@@ -616,7 +616,7 @@ export function KidsActivities() {
               <div className="text-sm text-pink-600">Kindness Points</div>
             </div>
           </div>
-          
+
           <div className="mb-4">
             <Progress value={Math.min(kindnessPoints * 10, 100)} className="h-3" />
             <div className="flex justify-between text-sm text-gray-600 mt-1">
@@ -624,21 +624,21 @@ export function KidsActivities() {
               <span>{Math.min(kindnessPoints * 10, 100)}% full</span>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
-            <Button 
+            <Button
               onClick={() => handleKindnessMoment('Shared toys with friend', 'Sharing')}
               className="flex-1 bg-pink-500 hover:bg-pink-600"
             >
               Shared Toys
             </Button>
-            <Button 
+            <Button
               onClick={() => handleKindnessMoment('Helped with dinner', 'Helping')}
               className="flex-1 bg-pink-500 hover:bg-pink-600"
             >
               Helped Parents
             </Button>
-            <Button 
+            <Button
               onClick={() => handleKindnessMoment('Comforted sad friend', 'Comforting')}
               className="flex-1 bg-pink-500 hover:bg-pink-600"
             >
@@ -698,8 +698,8 @@ export function KidsActivities() {
                           key={index}
                           onClick={() => handleEmotionSelect(emotion, scenario.emojis[index])}
                           className={`flex flex-col items-center p-3 rounded-lg border-2 transition-all ${
-                            selectedEmotion === emotion 
-                              ? 'border-purple-500 bg-purple-50' 
+                            selectedEmotion === emotion
+                              ? 'border-purple-500 bg-purple-50'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
@@ -739,7 +739,7 @@ export function KidsActivities() {
                   <div className="flex items-start gap-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${getCharacterColor(question.character)}`}>
                       <span className="text-lg">
-                        {question.character === 'Krishna' ? '👦' : 
+                        {question.character === 'Krishna' ? '👦' :
                          question.character === 'Hanuman' ? '🐒' : '👩'}
                       </span>
                     </div>
@@ -755,13 +755,13 @@ export function KidsActivities() {
                           5 min discussion
                         </Badge>
                       </div>
-                      
+
                       <div className="bg-yellow-50 rounded-lg p-4 mb-4">
                         <h5 className="text-sm font-medium text-yellow-900 mb-2">💡 Answer:</h5>
                         <p className="text-sm text-yellow-800">{question.answer}</p>
                       </div>
-                      
-                      <Button 
+
+                      <Button
                         onClick={() => handleMythologicalAnswer(question.id, question.answer)}
                         className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600"
                       >
@@ -836,7 +836,7 @@ export function KidsActivities() {
                             <Badge className={getDifficultyColor(prank.difficulty)}>
                               {prank.difficulty}
                             </Badge>
-                            <Button 
+                            <Button
                               onClick={() => handlePrankComplete(prank.id)}
                               size="sm"
                               className="bg-purple-500 hover:bg-purple-600"
@@ -874,7 +874,7 @@ export function KidsActivities() {
                               ))}
                             </div>
                           </div>
-                          <Button 
+                          <Button
                             onClick={() => handleTaskComplete(task.id)}
                             className="w-full bg-orange-500 hover:bg-orange-600"
                           >
@@ -921,7 +921,7 @@ export function KidsActivities() {
                               ))}
                             </ul>
                           </div>
-                          <Button 
+                          <Button
                             onClick={() => handleCreativeComplete(creative.id)}
                             className="w-full bg-blue-500 hover:bg-blue-600"
                           >
@@ -978,7 +978,7 @@ export function KidsActivities() {
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-semibold text-gray-900">{entry.title}</h4>
                           <Badge className={getCharacterColor(entry.type)}>
-                            {entry.type === 'krishna' ? '👦 Krishna' : 
+                            {entry.type === 'krishna' ? '👦 Krishna' :
                              entry.type === 'hanuman' ? '🐒 Hanuman' : '👩 Saraswati'}
                           </Badge>
                         </div>

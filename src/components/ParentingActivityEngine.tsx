@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { 
   Baby, 
-  Heart, 
-  Star, 
-  Clock, 
+  Heart,
+  Star,
+  Clock,
   Target,
   Award,
   Sparkles,
@@ -124,45 +124,45 @@ export function ParentingActivityEngine() {
   const getCategoryInfo = (category: string) => {
     switch (category) {
       case 'bonding':
-        return { 
-          name: 'Bonding', 
-          icon: Heart, 
+        return {
+          name: 'Bonding',
+          icon: Heart,
           color: 'from-pink-500 to-rose-500',
           bgColor: 'bg-pink-50',
           textColor: 'text-pink-700',
           emoji: '❤️'
         };
       case 'learning':
-        return { 
-          name: 'Learning', 
-          icon: BookOpen, 
+        return {
+          name: 'Learning',
+          icon: BookOpen,
           color: 'from-blue-500 to-cyan-500',
           bgColor: 'bg-blue-50',
           textColor: 'text-blue-700',
           emoji: '📚'
         };
       case 'creativity':
-        return { 
-          name: 'Creativity', 
-          icon: Palette, 
+        return {
+          name: 'Creativity',
+          icon: Palette,
           color: 'from-purple-500 to-violet-500',
           bgColor: 'bg-purple-50',
           textColor: 'text-purple-700',
           emoji: '🎨'
         };
       case 'wellness':
-        return { 
-          name: 'Wellness', 
-          icon: TreePine, 
+        return {
+          name: 'Wellness',
+          icon: TreePine,
           color: 'from-green-500 to-emerald-500',
           bgColor: 'bg-green-50',
           textColor: 'text-green-700',
           emoji: '🌳'
         };
       default:
-        return { 
-          name: 'Activity', 
-          icon: Star, 
+        return {
+          name: 'Activity',
+          icon: Star,
           color: 'from-gray-500 to-slate-500',
           bgColor: 'bg-gray-50',
           textColor: 'text-gray-700',
@@ -186,8 +186,8 @@ export function ParentingActivityEngine() {
   const dayProgress = (currentDay / 6) * 100;
 
   const completeActivity = (activityId: string) => {
-    setActivities(prev => prev.map(activity => 
-      activity.id === activityId 
+    setActivities(prev => prev.map(activity =>
+      activity.id === activityId
         ? { ...activity, completed: true, completedBy: 'both' }
         : activity
     ));
@@ -218,7 +218,7 @@ export function ParentingActivityEngine() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white/20 backdrop-blur-lg rounded-xl p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-white/90 font-medium">
@@ -240,7 +240,7 @@ export function ParentingActivityEngine() {
             <p className="text-xs opacity-90">Completed</p>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-0 shadow-lg rounded-2xl">
           <div className="p-3 text-center">
             <Users className="w-6 h-6 mx-auto mb-1" />
@@ -248,7 +248,7 @@ export function ParentingActivityEngine() {
             <p className="text-xs opacity-90">Family Members</p>
           </div>
         </div>
-        
+
         <div className="bg-gradient-to-br from-yellow-500 to-orange-500 text-white border-0 shadow-lg rounded-2xl">
           <div className="p-3 text-center">
             <Award className="w-6 h-6 mx-auto mb-1" />
@@ -271,15 +271,15 @@ export function ParentingActivityEngine() {
               const completedCount = dayActivities.filter(a => a.completed).length;
               const totalCount = dayActivities.length;
               const isCurrentDay = day === currentDay;
-              
+
               return (
                 <button
                   key={day}
                   onClick={() => setCurrentDay(day)}
                   className={`
                     relative p-3 rounded-xl border-2 transition-all duration-300
-                    ${isCurrentDay 
-                      ? 'border-purple-500 bg-purple-50 shadow-lg scale-105' 
+                    ${isCurrentDay
+                      ? 'border-purple-500 bg-purple-50 shadow-lg scale-105'
                       : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }
                   `}
@@ -317,10 +317,10 @@ export function ParentingActivityEngine() {
         {getDayActivities(currentDay).map((activity) => {
           const categoryInfo = getCategoryInfo(activity.category);
           const Icon = categoryInfo.icon;
-          
+
           return (
-            <div 
-              key={activity.id} 
+            <div
+              key={activity.id}
               className={`bg-white/90 backdrop-blur-lg border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden rounded-2xl ${
                 activity.completed ? 'ring-2 ring-green-400' : ''
               }`}
@@ -331,7 +331,7 @@ export function ParentingActivityEngine() {
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${categoryInfo.color} flex items-center justify-center text-white shadow-lg`}>
                       <Icon className="w-6 h-6" />
                     </div>
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-semibold text-gray-900">{activity.title}</h4>
@@ -343,7 +343,7 @@ export function ParentingActivityEngine() {
                         )}
                       </div>
                       <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
-                      
+
                       <div className="flex items-center gap-2 flex-wrap mb-2">
                         <Badge className={getDifficultyColor(activity.difficulty)}>
                           {activity.difficulty}
@@ -357,7 +357,7 @@ export function ParentingActivityEngine() {
                           +{activity.coins} coins
                         </Badge>
                       </div>
-                      
+
                       {activity.materials && activity.materials.length > 0 && (
                         <div className="mb-2">
                           <p className="text-xs font-medium text-gray-700 mb-1">Materials needed:</p>
@@ -370,7 +370,7 @@ export function ParentingActivityEngine() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div>
                         <p className="text-xs font-medium text-gray-700 mb-1">Benefits:</p>
                         <div className="flex flex-wrap gap-1">
@@ -384,17 +384,17 @@ export function ParentingActivityEngine() {
                     </div>
                   </div>
                 </div>
-                
+
                 {!activity.completed && (
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline"
                       className="border-gray-300 text-gray-700 hover:bg-gray-50"
                     >
                       Details
                     </Button>
-                    <Button 
+                    <Button
                       size="sm"
                       onClick={() => completeActivity(activity.id)}
                       className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"

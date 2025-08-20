@@ -19,10 +19,8 @@ const updateMemorySchema = z.object({
  */
 export async function GET(
   request: NextRequest,
-  context: any
+  { params }: { params: { id: string } }
 ) {
-  const { params } = context;
-  
   try {
     const memory = await db.memory.findUnique({
       where: { id: params.id },
@@ -56,10 +54,8 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  context: any
+  { params }: { params: { id: string } }
 ) {
-  const { params } = context;
-  
   try {
     const body = await request.json();
     
@@ -123,10 +119,8 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  context: any
+  { params }: { params: { id: string } }
 ) {
-  const { params } = context;
-  
   try {
     // Check if memory exists
     const existingMemory = await db.memory.findUnique({

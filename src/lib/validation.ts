@@ -62,9 +62,7 @@ export const updateMealPlanSchema = createMealPlanSchema.partial().extend({
 
 // Memory schemas
 const memoryTypeSchema = z.enum(['photo', 'video', 'text', 'milestone']);
-const memoryTypeQuerySchema = z.enum(['photo', 'video', 'text', 'milestone', 'all']);
 const sentimentSchema = z.enum(['positive', 'neutral', 'negative']);
-const sentimentQuerySchema = z.enum(['positive', 'neutral', 'negative', 'all']);
 
 export const createMemorySchema = z.object({
   coupleId: coupleIdSchema,
@@ -82,10 +80,7 @@ export const updateMemorySchema = createMemorySchema.partial().extend({
 
 // Recipe schemas
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);
-const difficultyQuerySchema = z.enum(['easy', 'medium', 'hard', 'all']);
-const cuisines = ['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other'] as const;
-const cuisineSchema = z.enum(cuisines);
-const cuisineQuerySchema = z.enum(['all', ...cuisines]);
+const cuisineSchema = z.enum(['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other']);
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Ingredient name is required'),
@@ -136,14 +131,14 @@ export const mealPlanQuerySchema = z.object({
 
 export const memoryQuerySchema = z.object({
   coupleId: coupleIdSchema,
-  type: memoryTypeQuerySchema.optional(),
-  sentiment: sentimentQuerySchema.optional(),
+  type: memoryTypeSchema.optional(),
+  sentiment: sentimentSchema.optional(),
   tags: z.string().optional() // Comma-separated string
 });
 
 export const recipeQuerySchema = z.object({
-  cuisine: cuisineQuerySchema.optional(),
-  difficulty: difficultyQuerySchema.optional(),
+  cuisine: cuisineSchema.optional(),
+  difficulty: difficultySchema.optional(),
   tags: z.string().optional(), // Comma-separated string
   isFavorite: z.enum(['true', 'false']).optional()
 });
@@ -154,7 +149,7 @@ export function validateRequestBody<T>(schema: z.ZodSchema<T>, data: unknown): T
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errorMessages = error.errors.map(err => `${err.path.join('.')}: ${err.message}`);
+      const errorMessages = error.issues.map(err => `${err.path.join('.')}: ${err.message}`);
       throw new Error(`Validation failed: ${errorMessages.join(', ')}`);
     }
     throw error;
