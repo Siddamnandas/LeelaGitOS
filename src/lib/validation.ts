@@ -64,6 +64,7 @@ export const updateMealPlanSchema = createMealPlanSchema.partial().extend({
 const memoryTypeSchema = z.enum(['photo', 'video', 'text', 'milestone']);
 const memoryTypeQuerySchema = z.enum(['photo', 'video', 'text', 'milestone', 'all']);
 const sentimentSchema = z.enum(['positive', 'neutral', 'negative']);
+const sentimentQuerySchema = z.enum(['positive', 'neutral', 'negative', 'all']);
 
 export const createMemorySchema = z.object({
   coupleId: coupleIdSchema,
@@ -136,7 +137,7 @@ export const mealPlanQuerySchema = z.object({
 export const memoryQuerySchema = z.object({
   coupleId: coupleIdSchema,
   type: memoryTypeQuerySchema.optional(),
-  sentiment: sentimentSchema.optional(),
+  sentiment: sentimentQuerySchema.optional(),
   tags: z.string().optional() // Comma-separated string
 });
 
@@ -153,7 +154,7 @@ export function validateRequestBody<T>(schema: z.ZodSchema<T>, data: unknown): T
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errorMessages = error.issues.map(err => `${err.path.join('.')}: ${err.message}`);
+      const errorMessages = error.errors.map(err => `${err.path.join('.')}: ${err.message}`);
       throw new Error(`Validation failed: ${errorMessages.join(', ')}`);
     }
     throw error;
@@ -166,7 +167,7 @@ export function validateQuery<T>(schema: z.ZodSchema<T>, searchParams: URLSearch
   searchParams.forEach((value, key) => {
     data[key] = value;
   });
-
+  
   try {
     return schema.parse(data);
   } catch (error) {
