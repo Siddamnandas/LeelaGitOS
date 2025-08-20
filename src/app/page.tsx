@@ -48,7 +48,7 @@ const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
     role="navigation"
     aria-label="Main navigation"
   >
-    <BottomNavigation 
+    <BottomNavigation
       activeTab={activeTab} 
       onTabChange={onTabChange}
     />
@@ -175,13 +175,13 @@ export default function Home() {
       </MainContent>
 
       {/* Floating Action Button with accessibility */}
-      <FloatingActionButton 
+      <FloatingActionButton
         aria-label="Quick actions menu"
         tabIndex={0}
       />
 
       {/* Bottom Navigation with memoization and accessibility */}
-      <BottomNavigationWrapper 
+      <BottomNavigationWrapper
         activeTab={activeTab} 
         onTabChange={handleTabChange}
       />
