@@ -19,55 +19,49 @@ const CelebrationOverlay = memo(() => (
     aria-live="polite"
     aria-label="Daily bonus celebration"
   >
-    <div className="animate-bounce text-6xl">
+    <div
+      className="animate-bounce text-6xl"
+      aria-hidden="true"
+    >
       🎉
     </div>
   </div>
 ));
-
 CelebrationOverlay.displayName = 'CelebrationOverlay';
 
-// Memoized BottomNavigation wrapper to prevent unnecessary re-renders
-const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
-  <BottomNavigation activeTab={activeTab} onTabChange={onTabChange} />
+// Memoized main content container for performance
+const MainContent = memo(({ children }) => (
+  <main
+    className="flex-1 overflow-y-auto pb-20"
+    role="main"
+    aria-label="Application main content"
+  >
+    {children}
+  </main>
 ));
+MainContent.displayName = 'MainContent';
 
+// Memoized bottom navigation wrapper
+const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
+  <nav
+    className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-lg border-t border-gray-200/50 shadow-lg"
+    role="navigation"
+    aria-label="Main navigation"
+  >
+    <BottomNavigation
+      activeTab={activeTab}
+      onTabChange={onTabChange}
+    />
+  </nav>
+));
 BottomNavigationWrapper.displayName = 'BottomNavigationWrapper';
 
-// Main Home component with comprehensive accessibility features
 export default function Home() {
   const [activeTab, setActiveTab] = useState('home');
+  const [streak, setStreak] = useState(7);
+  const [coins, setCoins] = useState(250);
   const [showCelebration, setShowCelebration] = useState(false);
   const { toast } = useToast();
-
-  // Memoized content renderer for performance optimization
-  const renderContent = useMemo(() => {
-    const commonProps = {
-      role: 'main',
-      'aria-labelledby': 'page-title',
-      className: 'flex-1 overflow-auto focus:outline-none',
-      tabIndex: -1
-    };
-
-    switch (activeTab) {
-      case 'home':
-        return <HomeDashboard {...commonProps} />;
-      case 'tasks':
-        return <TaskManagement {...commonProps} />;
-      case 'rituals':
-        return <RitualSystem {...commonProps} />;
-      case 'family':
-        return <FamilyHub {...commonProps} />;
-      case 'profile':
-        return <ProfileSettings {...commonProps} />;
-      case 'kids':
-        return <KidsActivities {...commonProps} />;
-      case 'planning':
-        return <FamilyPlanning {...commonProps} />;
-      default:
-        return <HomeDashboard {...commonProps} />;
-    }
-  }, [activeTab]);
 
   // Memoized tab change handler to prevent unnecessary re-renders
   const handleTabChange = useCallback((tab) => {
@@ -85,79 +79,71 @@ export default function Home() {
     setTimeout(() => document.body.removeChild(liveRegion), 1000);
   }, []);
 
-  // Memoized keyboard navigation handler
+  // Simulate daily login bonus with better error handling
+  useEffect(() => {
+    try {
+      const lastLogin = localStorage.getItem('lastLogin');
+      const today = new Date().toDateString();
+
+      if (lastLogin !== today) {
+        localStorage.setItem('lastLogin', today);
+        setCoins(prev => prev + 50);
+        setShowCelebration(true);
+        toast({
+          title: "Daily Bonus! 🎉",
+          description: "You earned 50 Lakshmi Coins for logging in today!",
+          duration: 3000,
+        });
+
+        setTimeout(() => setShowCelebration(false), 3000);
+      }
+    } catch (error) {
+      console.warn('Failed to access localStorage:', error);
+    }
+  }, [toast]);
+
+  // Memoized content renderer to prevent unnecessary re-renders
+  const renderContent = useMemo(() => {
+    const contentProps = { coins, streak };
+
+    switch (activeTab) {
+      case 'home':
+        return <HomeDashboard {...contentProps} />;
+      case 'tasks':
+        return <TaskManagement />;
+      case 'rituals':
+        return <RitualSystem />;
+      case 'family':
+        return <FamilyHub />;
+      case 'kids':
+        return <KidsActivities />;
+      case 'profile':
+        return <ProfileSettings {...contentProps} />;
+      default:
+        return <HomeDashboard {...contentProps} />;
+    }
+  }, [activeTab, coins, streak]);
+
+  // Keyboard navigation handler
   const handleKeyDown = useCallback((event) => {
-    // Alt + number keys for quick navigation
-    if (event.altKey) {
-      switch (event.key) {
-        case '1':
-          event.preventDefault();
-          handleTabChange('home');
-          break;
-        case '2':
-          event.preventDefault();
-          handleTabChange('tasks');
-          break;
-        case '3':
-          event.preventDefault();
-          handleTabChange('rituals');
-          break;
-        case '4':
-          event.preventDefault();
-          handleTabChange('family');
-          break;
-        case '5':
-          event.preventDefault();
-          handleTabChange('profile');
-          break;
-        case '6':
-          event.preventDefault();
-          handleTabChange('kids');
-          break;
-        case '7':
-          event.preventDefault();
-          handleTabChange('planning');
-          break;
+    // Handle tab navigation with Alt + number keys
+    if (event.altKey && event.key >= '1' && event.key <= '6') {
+      event.preventDefault();
+      const tabs = ['home', 'tasks', 'rituals', 'family', 'kids', 'profile'];
+      const tabIndex = parseInt(event.key) - 1;
+      if (tabs[tabIndex]) {
+        handleTabChange(tabs[tabIndex]);
       }
     }
     
-    // Escape key to focus main content
+    // Escape key to focus on main content
     if (event.key === 'Escape') {
-      const mainContent = document.getElementById('main-content');
-      if (mainContent) {
-        mainContent.focus();
+      const mainElement = document.querySelector('[role="main"]');
+      if (mainElement) {
+        mainElement.focus();
       }
     }
   }, [handleTabChange]);
-
-  // Daily bonus celebration trigger
-  const triggerCelebration = useCallback(() => {
-    setShowCelebration(true);
-    toast({
-      title: "Daily Bonus! 🎉",
-      description: "You've earned extra family points today!",
-      duration: 3000,
-    });
-    
-    // Auto-hide celebration after 3 seconds
-    setTimeout(() => {
-      setShowCelebration(false);
-    }, 3000);
-  }, [toast]);
-
-  // Check for daily bonus on component mount
-  useEffect(() => {
-    const lastBonusDate = localStorage.getItem('lastDailyBonus');
-    const today = new Date().toDateString();
-    
-    if (lastBonusDate !== today) {
-      // Trigger celebration after a short delay for better UX
-      setTimeout(() => {
-        triggerCelebration();
-        localStorage.setItem('lastDailyBonus', today);
-      }, 2000);
-    }
-  }, [triggerCelebration]);
 
   // Add keyboard event listener
   useEffect(() => {
@@ -184,9 +170,9 @@ export default function Home() {
       {showCelebration && <CelebrationOverlay />}
 
       {/* Main content area with proper ARIA labels */}
-      <main id="main-content">
+      <MainContent id="main-content">
         {renderContent}
-      </main>
+      </MainContent>
 
       {/* Floating Action Button with accessibility */}
       <FloatingActionButton

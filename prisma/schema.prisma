@@ -105,14 +105,13 @@ model Child {
   preferences  Json     @default("[]")
   created_at   DateTime @default(now())
 
-  couple               Couple              @relation(fields: [couple_id], references: [id], onDelete: Cascade)
-  storybook_entries    StorybookEntry[]
-  scheduled_activities ScheduledActivity[]
+  couple            Couple           @relation(fields: [couple_id], references: [id], onDelete: Cascade)
+  storybook_entries StorybookEntry[]
 
   @@map("children")
 }
 
-// Renamed from FamilyActivity, as it's more of a log/memory
+// Renamed from FamilyActivity to better reflect its purpose as a log/memory
 model StorybookEntry {
   id              String    @id @default(cuid())
   child_id        String
@@ -125,61 +124,13 @@ model StorybookEntry {
   @@map("storybook_entries")
 }
 
-enum ActivityCategory {
-  KRISHNA_PRANK
-  HANUMAN_HELPER
-  SARASWATI_CREATIVE
-}
-
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-}
-
-model ActivityTemplate {
-  id                  String   @id @default(cuid())
-  title               String
-  description         String
-  category            ActivityCategory
-  essence             String // e.g., 'Play & Joy'
-  parent_role         String
-  estimated_time_mins Int
-  difficulty          Difficulty
-
-  scheduled_instances ScheduledActivity[]
-
-  @@map("activity_templates")
-}
-
-model ScheduledActivity {
-  id                   String   @id @default(cuid())
-  child_id             String
-  activity_template_id String
-  scheduled_for        DateTime
-  status               ActivityStatus @default(PENDING)
-  completed_at         DateTime?
-  notes                String? // Parent's notes on the activity
-
-  child             Child            @relation(fields: [child_id], references: [id], onDelete: Cascade)
-  activity_template ActivityTemplate @relation(fields: [activity_template_id], references: [id], onDelete: Cascade)
-
-  @@map("scheduled_activities")
-}
-
-enum ActivityStatus {
-  PENDING
-  COMPLETED
-  SKIPPED
-}
-
 model RewardTransaction {
-  id           String   @id @default(cuid())
-  couple_id    String
+  id          String   @id @default(cuid())
+  couple_id   String
   coins_earned Int
-  coins_spent  Int      @default(0)
-  activity     String // Description of activity
-  created_at   DateTime @default(now())
+  coins_spent Int      @default(0)
+  activity    String   // Description of activity
+  created_at  DateTime @default(now())
 
   couple Couple @relation(fields: [couple_id], references: [id], onDelete: Cascade)
 
