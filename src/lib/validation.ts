@@ -62,7 +62,9 @@ export const updateMealPlanSchema = createMealPlanSchema.partial().extend({
 
 // Memory schemas
 const memoryTypeSchema = z.enum(['photo', 'video', 'text', 'milestone']);
+const memoryTypeQuerySchema = z.enum(['photo', 'video', 'text', 'milestone', 'all']);
 const sentimentSchema = z.enum(['positive', 'neutral', 'negative']);
+const sentimentQuerySchema = z.enum(['positive', 'neutral', 'negative', 'all']);
 
 export const createMemorySchema = z.object({
   coupleId: coupleIdSchema,
@@ -131,8 +133,8 @@ export const mealPlanQuerySchema = z.object({
 
 export const memoryQuerySchema = z.object({
   coupleId: coupleIdSchema,
-  type: memoryTypeSchema.optional(),
-  sentiment: sentimentSchema.optional(),
+  type: memoryTypeQuerySchema.optional(),
+  sentiment: sentimentQuerySchema.optional(),
   tags: z.string().optional() // Comma-separated string
 });
 
