@@ -82,7 +82,9 @@ export const updateMemorySchema = createMemorySchema.partial().extend({
 
 // Recipe schemas
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);
-const cuisineSchema = z.enum(['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other']);
+const cuisines = ['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other'] as const;
+const cuisineSchema = z.enum(cuisines);
+const cuisineQuerySchema = z.enum(['all', ...cuisines]);
 
 const ingredientSchema = z.object({
   name: z.string().min(1, 'Ingredient name is required'),
@@ -139,7 +141,7 @@ export const memoryQuerySchema = z.object({
 });
 
 export const recipeQuerySchema = z.object({
-  cuisine: cuisineSchema.optional(),
+  cuisine: cuisineQuerySchema.optional(),
   difficulty: difficultySchema.optional(),
   tags: z.string().optional(), // Comma-separated string
   isFavorite: z.enum(['true', 'false']).optional()
