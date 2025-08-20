@@ -13,13 +13,13 @@ import { useToast } from '@/hooks/use-toast';
 
 // Memoized celebration component for performance
 const CelebrationOverlay = memo(() => (
-  <div 
+  <div
     className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
     role="alert"
     aria-live="polite"
     aria-label="Daily bonus celebration"
   >
-    <div 
+    <div
       className="animate-bounce text-6xl"
       aria-hidden="true"
     >
@@ -30,8 +30,8 @@ const CelebrationOverlay = memo(() => (
 CelebrationOverlay.displayName = 'CelebrationOverlay';
 
 // Memoized main content container for performance
-const MainContent = memo(({ children }) => (
-  <main 
+const MainContent = memo<{ children?: React.ReactNode }>(({ children }) => (
+  <main
     className="flex-1 overflow-y-auto pb-20"
     role="main"
     aria-label="Application main content"
@@ -43,7 +43,7 @@ MainContent.displayName = 'MainContent';
 
 // Memoized bottom navigation wrapper
 const BottomNavigationWrapper = memo(({ activeTab, onTabChange }) => (
-  <nav 
+  <nav
     className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-lg border-t border-gray-200/50 shadow-lg"
     role="navigation"
     aria-label="Main navigation"
@@ -110,13 +110,13 @@ export default function Home() {
       case 'home':
         return <HomeDashboard {...contentProps} />;
       case 'tasks':
-        return <TaskManagement />;
+        return <TaskManagement {...contentProps} />;
       case 'rituals':
-        return <RitualSystem />;
+        return <RitualSystem {...contentProps} />;
       case 'family':
-        return <FamilyHub />;
+        return <FamilyHub {...contentProps} />;
       case 'kids':
-        return <KidsActivities />;
+        return <KidsActivities {...contentProps} />;
       case 'profile':
         return <ProfileSettings {...contentProps} />;
       default:
@@ -152,13 +152,13 @@ export default function Home() {
   }, [handleKeyDown]);
 
   return (
-    <div 
+    <div
       className="flex flex-col h-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50"
       role="application"
       aria-label="LeelaGitOS Family Management App"
     >
       {/* Skip to main content link for accessibility */}
-      <a 
+      <a
         href="#main-content" 
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded"
         tabIndex={0}
@@ -187,7 +187,7 @@ export default function Home() {
       />
 
       {/* Screen reader only instructions */}
-      <div 
+      <div
         className="sr-only"
         aria-live="polite"
         aria-label="Keyboard navigation instructions"
