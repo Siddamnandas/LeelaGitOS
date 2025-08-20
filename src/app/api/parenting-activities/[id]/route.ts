@@ -10,10 +10,10 @@ const updateActivityBodySchema = z.object({
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return new NextResponse(JSON.stringify({ error: 'Activity ID is required' }), { status: 400 });
     }
