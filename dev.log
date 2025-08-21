@@ -6,7 +6,7 @@
 > Ready on http://0.0.0.0:3000
 > Socket.IO server running at ws://0.0.0.0:3000/api/socketio
  ○ Compiling / ...
- ✓ Compiled / in 4.3s (1880 modules)
+ ✓ Compiled / in 2.2s (1871 modules)
  ⨯ Error: Invalid src prop (https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400&auto=format&fit=crop&crop=faces) on `next/image`, hostname "images.unsplash.com" is not configured under images in your `next.config.js`
 See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
     at defaultLoader (../../../src/shared/lib/image-loader.ts:70:16)
@@ -24,8 +24,6 @@ See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
   73 |           ) {
   digest: '2337918773'
 }
- GET / 500 in 4569ms
+ GET / 500 in 2510ms
  ⚠ Cross origin request detected from 0.0.0.0 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
- ✓ Compiled /favicon.ico in 321ms (978 modules)
- GET /favicon.ico 200 in 397ms
