@@ -3,19 +3,29 @@
 [33m[nodemon] watching path(s): server.ts src/**/*[39m
 [33m[nodemon] watching extensions: ts,tsx,js,jsx[39m
 [32m[nodemon] starting `npx tsx server.ts`[39m
- ⨯ uncaughtException: Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
-    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '0.0.0.0',
-  port: 3000
+> Ready on http://0.0.0.0:3000
+> Socket.IO server running at ws://0.0.0.0:3000/api/socketio
+ ○ Compiling / ...
+ ✓ Compiled / in 4.3s (1880 modules)
+ ⨯ Error: Invalid src prop (https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400&auto=format&fit=crop&crop=faces) on `next/image`, hostname "images.unsplash.com" is not configured under images in your `next.config.js`
+See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
+    at defaultLoader (../../../src/shared/lib/image-loader.ts:70:16)
+    at eval (../../../src/shared/lib/get-img-props.ts:239:13)
+    at Array.map (<anonymous>)
+    at generateImgAttrs (../../../src/shared/lib/get-img-props.ts:237:7)
+    at getImgProps (../../../src/shared/lib/get-img-props.ts:693:24)
+    at eval (../../src/client/image-component.tsx:394:64)
+  68 |         const { hasRemoteMatch } = require('./match-remote-pattern')
+  69 |         if (!hasRemoteMatch(config.domains, config.remotePatterns, parsedSrc)) {
+> 70 |           throw new Error(
+     |                ^
+  71 |             `Invalid src prop (${src}) on \`next/image\`, hostname "${parsedSrc.hostname}" is not configured under images in your \`next.config.js\`\n` +
+  72 |               `See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host`
+  73 |           ) {
+  digest: '2337918773'
 }
- ⨯ uncaughtException:  Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
-    at <unknown> (Error: listen EADDRINUSE: address already in use 0.0.0.0:3000) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '0.0.0.0',
-  port: 3000
-}
+ GET / 500 in 4569ms
+ ⚠ Cross origin request detected from 0.0.0.0 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ✓ Compiled /favicon.ico in 321ms (978 modules)
+ GET /favicon.ico 200 in 397ms
