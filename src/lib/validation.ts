@@ -78,6 +78,32 @@ export const updateMemorySchema = createMemorySchema.partial().extend({
   id: z.string().min(1, 'ID is required')
 });
 
+// Task schemas
+const taskStatusSchema = z.enum(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']);
+const taskCategorySchema = z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'SEASONAL']);
+
+export const createTaskSchema = z.object({
+  coupleId: coupleIdSchema,
+  title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
+  description: z.string().max(1000, 'Description too long').optional(),
+  assignedTo: z.enum(['partner_a', 'partner_b', 'both']),
+  category: taskCategorySchema,
+  status: taskStatusSchema.optional(),
+  dueAt: optionalDateSchema,
+  aiReasoning: z.any().optional()
+});
+
+export const updateTaskSchema = createTaskSchema.partial().extend({
+  id: z.string().min(1, 'ID is required')
+});
+
+export const taskQuerySchema = z.object({
+  coupleId: coupleIdSchema,
+  status: taskStatusSchema.or(z.literal('all')).optional(),
+  assignedTo: z.string().optional(),
+  category: taskCategorySchema.or(z.literal('all')).optional(),
+});
+
 // Recipe schemas
 const difficultySchema = z.enum(['easy', 'medium', 'hard']);
 const cuisineSchema = z.enum(['italian', 'mexican', 'indian', 'chinese', 'american', 'mediterranean', 'french', 'thai', 'japanese', 'other']);
