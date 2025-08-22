@@ -6,7 +6,8 @@
 > Ready on http://0.0.0.0:3000
 > Socket.IO server running at ws://0.0.0.0:3000/api/socketio
  ○ Compiling / ...
- ✓ Compiled / in 2.1s (1871 modules)
- GET / 200 in 2388ms
+ ✓ Compiled / in 2.1s (1867 modules)
+ GET / 200 in 2429ms
  ⚠ Cross origin request detected from 0.0.0.0 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET / 200 in 70ms
